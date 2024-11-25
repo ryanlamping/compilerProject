@@ -52,6 +52,8 @@ public class PostfixTranslator implements IPostfixTranslator {
     private String postfix;
     private Stack<Integer> evaluator = new Stack<>();
     
+    // based off token when parsing, add or pop to stack
+    // come across operator --> operate
     public PostfixTranslator(IScanner lex) {
         this.scanner = lex;
         this.token = this.scanner.getToken();
@@ -182,6 +184,7 @@ public class PostfixTranslator implements IPostfixTranslator {
         }
     }
 
+    // literally just pop stack
     // if character is an operator --> pop stack
     // operate with stack content and operator
     // push result to stack

@@ -73,6 +73,7 @@ public class PostfixTranslator implements IPostfixTranslator {
         factor(); moreFactors();
     }
         
+    // pop factors from stack and operate with operator found
     private void moreTerms() throws Exception {
         if (this.token.getName().equals("add")) {
             
@@ -96,6 +97,7 @@ public class PostfixTranslator implements IPostfixTranslator {
         } 
     }
 
+    // push factor into stack
     private void factor() throws Exception {
         if (this.token.getName().equals("open-parenthesis")) {
 
@@ -110,15 +112,18 @@ public class PostfixTranslator implements IPostfixTranslator {
 
             // The value of the token is given by the method getValue()
             // Add value of token to the Class postfix string
+            // push into stack
             this.postfix = this.postfix + number.getValue() + " ";
 
             match("int");
         }
+        // factor does not produce epsilon so throw error if no match
         else {
             throw new Exception("\nError at line " + this.scanner.getLine() + ", open parenthesis or int expected");
         }
     }
 
+    // pop factors from stack and operate with operator found
     // produces four rules (like more terms, but * factor instead of + terms)
     private void moreFactors() throws Exception {
         if (this.token.getName().equals("multiply")) {
@@ -152,8 +157,11 @@ public class PostfixTranslator implements IPostfixTranslator {
     
     private void match(String tokenName) throws Exception {
         if (this.token.getName().equals(tokenName)) {
+            // move onto the next token
             this.token = this.scanner.getToken();
-        } else {
+        } 
+        // throw error as source code is incorrect
+        else {
             throw new Exception("\nError at line " + this.scanner.getLine() + ": " + (this.scanner.getLexeme(tokenName).equals("null") ? "token " + tokenName +
                                 " is not defined in 'lexicon.txt'" : tokenName + " expected"));
         }
