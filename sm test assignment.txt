@@ -1,0 +1,30 @@
+addressof y
+push 2
+store
+addressof m
+push 1
+store
+addressof d
+push 3
+store
+addressof x
+push 14
+addressof y
+load
+*
+push 4
+/
+push 16
+addressof m
+load
+*
+push 4
++
+push 2
+/
++
+addressof d
+load
++
+store
+halt

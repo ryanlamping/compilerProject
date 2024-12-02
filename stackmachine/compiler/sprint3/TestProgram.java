@@ -1,4 +1,4 @@
-package stackmachine.compiler.sprint2;
+package stackmachine.compiler.sprint3;
 
 public class TestProgram {
 
