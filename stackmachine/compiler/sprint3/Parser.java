@@ -74,7 +74,12 @@ import slu.compiler.*;
  *                                  % arithmetic-factor { generateCode("%") } more-arithmetic-factors |
  *                                  epsilon
  *                    
- *     arithmetic-factor        ->  (arithmetic-expression) |
+ *     arithmetic-factor        ->  base-factor more-powers
+ * 
+ *     more-powers              -> ** base-factor { generate code("**") } more-powers |
+ *                                 epsilon
+ * 
+ *     base-factor              ->   (arithmetic-expression) |
  *                                   id  { generateCode("addressof " + id.lexeme); generateCode("load") } |
  *                                   int { generateCode("push " + int.value) }
  *  
@@ -226,7 +231,7 @@ import slu.compiler.*;
             // If no int inside the [ ], then it will throw error. Needs to be int (for simplicity)
             match("int");
 
-            match("close-square-bracket");
+            match("closed-square-bracket");
 
             // Add to the hash table
             this.symbols.put(id.getLexeme(), new OneDimensionalArray(type, size));
@@ -295,21 +300,24 @@ import slu.compiler.*;
     private void logicFactor() throws Exception {
     
       if (this.token.getName().equals("not")) {
+
         match("not");
 
         logicExpression();
 
+        this.code.generate("!");
+
       } else if (this.token.getName().equals("true")){
         
-        match("true");
+        this.code.generate("push 1");
 
-        logicExpression();
+        match("true");
 
       } else if (this.token.getName().equals("false")) {
         
-        match("false");
+        this.code.generate("push 0");
 
-        logicExpression();
+        match("false");
 
       } else {
         relationalExpression();
@@ -339,9 +347,23 @@ import slu.compiler.*;
 
     // relational-expression    ->  arithmetic-expression relational-operator arithmetic-expression |
     //                              arithmetic-expression
-    private void relationalExpression() throws Exception {
-       arithmeticExpression();
-    }
+	private void relationalExpression() throws Exception {
+		arithmeticExpression();
+		
+		String tokenName = this.token.getName();
+		
+		if (tokenName.equals("greater-than") || tokenName.equals("greater-or-equal") || tokenName.equals("less-than") || tokenName.equals("less-or-equal") || tokenName.equals("equal") || tokenName.equals("not-equal")) {
+			
+			String operator = this.scanner.getLexeme(tokenName);
+			
+			match(tokenName);
+			
+			arithmeticExpression();
+			
+			this.code.generate(operator);
+			
+		}
+	}
 
     private void assignmentExpression() throws Exception {        
         Identifier id = (Identifier) this.token;
@@ -363,11 +385,20 @@ import slu.compiler.*;
         this.code.generate("store");
     }
 
-    private void optionalArray(Identifier id) throws Exception {
+	private void optionalArray(Identifier id) throws Exception {
+		if (this.token.getName().equals("open-square-bracket")) {
+				
+			match("open-square-bracket");
+				
+			arithmeticExpression();
+				
+			match("closed-square-bracket");
+				
+			// the value of the arithmetic expression is added to the base address of the array
 
-      // implement the code for the grammar rule and the semantic actions
-
-    }
+			this.code.generate("+");
+		}
+	}
 
     private void arithmeticExpression() throws Exception {
         arithmeticTerm(); moreArithmeticTerms();
@@ -402,6 +433,25 @@ import slu.compiler.*;
     }
 
     private void arithmeticFactor() throws Exception {        
+        baseFactor(); morePowers();
+    }
+
+    private void morePowers() throws Exception {
+        if (this.token.getName().equals("power")) {
+
+            match("power");
+            
+            baseFactor();
+
+            this.code.generate("**");
+
+            morePowers();
+        }
+
+        // No else since epsilon
+    }
+
+    private void baseFactor() throws Exception {
         if (this.token.getName().equals("open-parenthesis")) {
             
             match("open-parenthesis");
@@ -440,7 +490,7 @@ import slu.compiler.*;
             
             this.code.generate("push " + number.getValue());
             
-            match("float");        
+            match("float");
 
         } else {
             

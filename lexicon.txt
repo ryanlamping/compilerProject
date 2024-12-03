@@ -19,6 +19,7 @@ subtract				-
 multiply				*
 divide					/
 modulus					%
+power					**
 
 // Logical operators
 

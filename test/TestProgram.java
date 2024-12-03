@@ -7,7 +7,7 @@ public class TestProgram {
     public static void main(String[] args) {
         IToken tokenName;
         
-        String expression =  "10 3 * 5 +"; // "((10 * 3) + (50 / 5)) * 2 / 4";
+        String expression =  "10 3 ** 5 +"; // "((10 * 3) + (50 / 5)) * 2 / 4";
 
         try {
             
