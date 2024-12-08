@@ -1,0 +1,13 @@
+addressof x
+push 2
+push 2
+push 3
+**
+**
+store
+literal 'x='
+addressof x
+load
+ostream
+println
+halt

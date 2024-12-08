@@ -1,4 +1,4 @@
-package stackmachine.compiler.sprint3;
+package stackmachine.compiler.sprint4;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,11 @@ import slu.compiler.*;
  *                                  epsilon
  *                              
  *     statement                ->  declaration |
- *                                  id assignment-expression ;
+ *                                  id assignment-expression ; |
+ *                                  print( print-arguments )   { generateCode("println") }   |
+ *                                  println( print-arguments ) { generateCode("printlnln") } |
+ *                                  read( { generateCode("addressof " + id.lexeme); optional-array.id = id }
+ *                                  id optional-array { generateCode("read") )
  *                              
  *     logic-expression         ->  logic-term more-logic-terms
  *     
@@ -76,13 +80,18 @@ import slu.compiler.*;
  *                    
  *     arithmetic-factor        ->  base-factor more-powers
  * 
- *     more-powers              -> ** base-factor { generate code("**") } more-powers |
+ *     more-powers              -> ** arithmetic-factor { generate code("**") } |
  *                                 epsilon
  * 
  *     base-factor              ->   (arithmetic-expression) |
  *                                   id  { generateCode("addressof " + id.lexeme); generateCode("load") } |
  *                                   int { generateCode("push " + int.value) }
  *  
+ *     print-arguments          ->  string { generateCode("literal '" + literal.getValue() + "'") } more-print-arguments |
+ *                                  arithmetic-expression { generateCode("ostream") } more-print-arguments
+ *                                  
+ *     more-print-arguments     ->  , print-arguments |
+ *                                  epsilon
  */
 
  public class Parser implements IParser {
@@ -233,32 +242,79 @@ import slu.compiler.*;
     }    
 
     private void statements() throws Exception {
-        String tokenName = this.token.getName();
+		String tokenName = this.token.getName();
 
-        // check the tokens in FIRST(statement)
-        
-        if (tokenName.equals("int") || tokenName.equals("float") || tokenName.equals("boolean") || tokenName.equals("id")) {            
-            statement();
-            statements();            
-        }
+		// check the tokens in FIRST(statement)
+		
+		if (tokenName.equals("int") || tokenName.equals("float") || tokenName.equals("boolean") || tokenName.equals("id") || tokenName.equals("print") || tokenName.equals("println") || tokenName.equals("read")) {			
+			statement();
+			statements();			
+		}
     }
     
     private void statement() throws Exception {
-        String tokenName = this.token.getName();
-        
-        // check the tokens in FIRST(statement)
-        
-        if (tokenName.equals("int") || tokenName.equals("float") || tokenName.equals("boolean")) {
-            
-            declaration();
-            
-        } else if (tokenName.equals("id")) {
+		String tokenName = this.token.getName();
+		
+		// check the tokens in FIRST(statement)
+		
+		if (tokenName.equals("int") || tokenName.equals("float") || tokenName.equals("boolean")) {
+			
+			declaration();
+			
+		} else if (tokenName.equals("id")) {
 
-            assignmentExpression();
-            match("semicolon");
-                        
-        }    
+			assignmentExpression();
+			match("semicolon");
+			
+		} else if (tokenName.equals("print")) {
+			
+			match("print");
+			match("open-parenthesis");
+			
+			printArguments();
+
+			this.code.generate("print");
+			
+			match("closed-parenthesis");
+			match("semicolon");
+			
+		} else if (tokenName.equals("println")) {
+			
+			match("println");
+			match("open-parenthesis");
+			
+			printArguments();
+
+			this.code.generate("println");
+			
+			match("closed-parenthesis");
+			match("semicolon");
+			
+		} else if (tokenName.equals("read")) {
+			
+			match("read");
+			match("open-parenthesis");
+			
+            Identifier id = (Identifier) this.token;
+            
+			if (this.symbols.get(id.getLexeme()) == null) {				
+				throw new Exception("\nError at line " + this.scanner.getLine() + ": identifier '" + id.getLexeme() + "' not declared");
+			}
+            
+            this.code.generate("addressof " + id.getLexeme());
+
+            match("id");
+            
+			optionalArray(id);
+			
+			this.code.generate("read");
+			
+			match("closed-parenthesis");
+			match("semicolon");
+			
+		}
     }
+
     
 
     // logic-expression         ->  logic-term more-logic-terms
@@ -426,7 +482,7 @@ import slu.compiler.*;
     }
 
     private void arithmeticFactor() throws Exception {        
-        morePowers(); baseFactor();
+        baseFactor(); morePowers();
     }
 
     private void morePowers() throws Exception {
@@ -434,14 +490,11 @@ import slu.compiler.*;
 
             match("power");
             
-            baseFactor();
+            // arithmeticFactor instead of baseFactor
+            arithmeticFactor();
 
             this.code.generate("**");
-
-            morePowers();
         }
-
-        // No else since epsilon
     }
 
     private void baseFactor() throws Exception {
@@ -526,6 +579,36 @@ import slu.compiler.*;
         }        
     }
     
+	private void printArguments() throws Exception {
+		if (this.token.getName().equals("string")) {
+
+			StringLiteral literal = (StringLiteral) this.token;
+
+			match("string");
+
+			this.code.generate("literal '" + literal.getValue() + "'");
+
+			morePrintArguments();
+
+		} else {
+			
+			arithmeticExpression();
+         
+			this.code.generate("ostream");
+         
+			morePrintArguments();
+
+		}
+	}
+	
+	private void morePrintArguments() throws Exception {
+		if (this.token.getName().equals("comma")) {			
+			match("comma");
+		
+			printArguments();
+		} 
+	}
+
     private void match(String tokenName) throws Exception {
         if (this.token.getName().equals(tokenName)) {
             this.token = this.scanner.getToken();

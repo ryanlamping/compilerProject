@@ -1,0 +1,125 @@
+array fibonacci int 10
+literal 'Enter fibonacci[0]: '
+print
+addressof fibonacci
+push 0
++
+read
+literal 'Enter fibonacci[1]: '
+print
+addressof fibonacci
+push 1
++
+read
+addressof fibonacci
+push 2
++
+addressof fibonacci
+push 1
++
+load
+addressof fibonacci
+push 0
++
+load
++
+store
+addressof fibonacci
+push 3
++
+addressof fibonacci
+push 2
++
+load
+addressof fibonacci
+push 1
++
+load
++
+store
+addressof fibonacci
+push 4
++
+addressof fibonacci
+push 3
++
+load
+addressof fibonacci
+push 2
++
+load
++
+store
+addressof fibonacci
+push 5
++
+addressof fibonacci
+push 4
++
+load
+addressof fibonacci
+push 3
++
+load
++
+store
+addressof fibonacci
+push 6
++
+addressof fibonacci
+push 5
++
+load
+addressof fibonacci
+push 4
++
+load
++
+store
+addressof fibonacci
+push 7
++
+addressof fibonacci
+push 6
++
+load
+addressof fibonacci
+push 5
++
+load
++
+store
+addressof fibonacci
+push 8
++
+addressof fibonacci
+push 7
++
+load
+addressof fibonacci
+push 6
++
+load
++
+store
+addressof fibonacci
+push 9
++
+addressof fibonacci
+push 8
++
+load
+addressof fibonacci
+push 7
++
+load
++
+store
+literal 'fibonacci[9] is '
+addressof fibonacci
+push 9
++
+load
+ostream
+println
+halt
