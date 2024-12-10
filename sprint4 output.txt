@@ -4,6 +4,18 @@ push 2
 push 3
 **
 **
+push 200
+push 2
+push 28
+*
++
+push 2
+push 4
+**
+*
+push 16
+/
++
 store
 literal 'x='
 addressof x
