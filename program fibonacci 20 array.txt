@@ -1,0 +1,19 @@
+void main {
+   
+   // fibonacci(20) using an array
+   
+   int n = 20, f[21];
+   
+   f[0] = 0;
+   f[1] = 1;
+   
+   int i = 2;
+   
+   while (i<=n) {
+      f[i] = f[i-2] + f[i-1];
+
+      i = i + 1;
+   }
+   
+   println("fibonacci(20) is ", f[n]);
+}

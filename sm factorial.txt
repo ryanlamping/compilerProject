@@ -1,0 +1,42 @@
+literal 'Enter n: '
+print
+addressof n
+read
+addressof i
+push 1
+store
+addressof f
+push 1
+store
+Label 0:
+addressof i
+load
+addressof n
+load
+<=
+gofalse Label 1
+addressof f
+addressof f
+load
+addressof i
+load
+*
+store
+addressof i
+addressof i
+load
+push 1
++
+store
+goto Label 0
+Label 1:
+literal 'factorial('
+addressof n
+load
+ostream
+literal ') is '
+addressof f
+load
+ostream
+println
+halt

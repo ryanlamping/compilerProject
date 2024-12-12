@@ -1,0 +1,31 @@
+void main { 
+   
+   // binary search in an array of even integer values
+   
+   int data[20];
+   
+   int i = 0, size = 20;
+   
+   while (i < size) {
+      data[i] = (i+1)*2;
+      
+      i = i + 1;
+   }
+   
+   int low = 0, mid, high = size - 1, key = 14;
+   boolean found = false;
+   
+   while (low<=high && !found) {
+      mid = (low + high) / 2;
+      
+      if (data[mid] == key)
+         found = true;
+      else
+         if (data[mid] > key)
+            high = mid - 1;
+         else
+            low = mid + 1;
+    }
+          
+    println("binary search of key 14 is ", found);     
+}

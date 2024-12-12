@@ -1,0 +1,33 @@
+addressof i
+push 1
+store
+addressof f
+push 1
+store
+Label 0:
+addressof i
+load
+push 10
+<=
+gofalse Label 1
+addressof f
+addressof f
+load
+addressof i
+load
+*
+store
+addressof i
+addressof i
+load
+push 1
++
+store
+goto Label 0
+Label 1:
+literal 'factorial(10) is '
+addressof f
+load
+ostream
+println
+halt

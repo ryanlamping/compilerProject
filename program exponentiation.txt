@@ -1,0 +1,7 @@
+void main {
+   int x = 200, y = 28, z = 16;
+   
+   int output = 2**2**3 + (x + 2 * y) * 2**4 / z;
+   
+   println("output is ", output);
+}

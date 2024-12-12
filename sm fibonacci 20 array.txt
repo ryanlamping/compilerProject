@@ -1,0 +1,61 @@
+addressof n
+push 20
+store
+array f int 21
+addressof f
+push 0
++
+push 0
+store
+addressof f
+push 1
++
+push 1
+store
+addressof i
+push 2
+store
+Label 0:
+addressof i
+load
+addressof n
+load
+<=
+gofalse Label 1
+addressof f
+addressof i
+load
++
+addressof f
+addressof i
+load
+push 2
+-
++
+load
+addressof f
+addressof i
+load
+push 1
+-
++
+load
++
+store
+addressof i
+addressof i
+load
+push 1
++
+store
+goto Label 0
+Label 1:
+literal 'fibonacci(20) is '
+addressof f
+addressof n
+load
++
+load
+ostream
+println
+halt

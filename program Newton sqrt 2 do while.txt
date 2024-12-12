@@ -1,0 +1,13 @@
+void main {
+   float root, t, number = 2.0;
+     
+   root = number / 2.0;
+   
+   do {
+      t = root;
+      
+      root = 0.5 * (t + number/t);
+   } while ((t - root) != 0.0);
+   
+   println("sqrt(2.0) is ", root);
+}

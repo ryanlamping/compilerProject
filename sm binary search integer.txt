@@ -1,0 +1,115 @@
+array data int 20
+addressof i
+push 0
+store
+addressof size
+push 20
+store
+Label 0:
+addressof i
+load
+addressof size
+load
+<
+gofalse Label 1
+addressof data
+addressof i
+load
++
+addressof i
+load
+push 1
++
+push 2
+*
+store
+addressof i
+addressof i
+load
+push 1
++
+store
+goto Label 0
+Label 1:
+addressof low
+push 0
+store
+addressof high
+addressof size
+load
+push 1
+-
+store
+addressof key
+push 14
+store
+addressof found
+push 0
+store
+Label 2:
+addressof low
+load
+addressof high
+load
+<=
+addressof found
+load
+!
+&&
+gofalse Label 3
+addressof mid
+addressof low
+load
+addressof high
+load
++
+push 2
+/
+store
+addressof data
+addressof mid
+load
++
+load
+addressof key
+load
+==
+gofalse Label 4
+addressof found
+push 1
+store
+goto Label 5
+Label 4:
+addressof data
+addressof mid
+load
++
+load
+addressof key
+load
+>
+gofalse Label 6
+addressof high
+addressof mid
+load
+push 1
+-
+store
+goto Label 7
+Label 6:
+addressof low
+addressof mid
+load
+push 1
++
+store
+Label 7:
+Label 5:
+goto Label 2
+Label 3:
+literal 'binary search of key 14 is '
+addressof found
+load
+ostream
+println
+halt

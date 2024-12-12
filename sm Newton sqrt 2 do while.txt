@@ -1,0 +1,42 @@
+addressof number
+push 2.0
+store
+addressof root
+addressof number
+load
+push 2.0
+/
+store
+Label 0:
+addressof t
+addressof root
+load
+store
+addressof root
+push 0.5
+addressof t
+load
+addressof number
+load
+addressof t
+load
+/
++
+*
+store
+addressof t
+load
+addressof root
+load
+-
+push 0.0
+!=
+gofalse Label 1
+goto Label 0
+Label 1:
+literal 'sqrt(2.0) is '
+addressof root
+load
+ostream
+println
+halt

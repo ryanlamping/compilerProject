@@ -1,0 +1,15 @@
+void main { 
+   
+   // fibonacci(20) using dynamic programming
+   
+   int i = 2, n = 20, f, f_2 = 0, f_1 = 1;
+   
+   while (i<=n) {
+      f = f_2 + f_1;
+      f_2 = f_1;
+      f_1 = f;
+      i = i + 1;
+   }
+   
+   println("fibonacci(20) is ", f);
+}

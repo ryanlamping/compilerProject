@@ -1,0 +1,17 @@
+void main {
+   
+   // sqrt(2.0) using Newton's method
+   
+   float root, number = 2.0;
+     
+   int i = 1;
+   
+   root = number;
+   
+   while (i < 10) {
+      root = 0.5 * (root + number/root);
+      i = i + 1;
+   }
+   
+   println("sqrt(2.0) is ", root);
+}
